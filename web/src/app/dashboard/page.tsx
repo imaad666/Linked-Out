@@ -51,86 +51,107 @@ export default async function DashboardPage() {
     .sort((a, b) => b - a);
 
   return (
-    <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-10">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8">
-        <header className="flex flex-col gap-4 border-b border-slate-800/80 pb-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-400">
-              Linked Out / Dashboard
-            </p>
-            <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-50 sm:text-3xl">
-              Hey {user.displayName || "friend"},
-            </h1>
-            <p className="mt-1 text-sm text-slate-400">
-              This is your private log of wins, fuck ups, and weird milestones.
-              No endorsements. No recruiters. Just your story.
-            </p>
+    <main className="min-h-[calc(100vh-56px)] bg-[#0a66c2]/10 px-4 py-6 sm:px-6 lg:px-10">
+      <div className="mx-auto flex w-full max-w-6xl gap-4 lg:gap-6">
+        {/* Left sidebar */}
+        <aside className="hidden w-64 flex-shrink-0 lg:block">
+          <div className="overflow-hidden rounded-lg border border-[#d0e3ff] bg-white text-[#0a66c2]">
+            <div className="h-14 bg-[#0a66c2]" />
+            <div className="px-4 pb-4 pt-6">
+              <h2 className="text-sm font-semibold text-[#084482]">
+                {user.displayName || "Linked Out member"}
+              </h2>
+              <p className="mt-1 text-xs text-[#084482]/80">
+                Archiving wins, fuck ups, and everything in between.
+              </p>
+            </div>
           </div>
+        </aside>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href="/posts/new"
-              className="inline-flex items-center gap-2 rounded-full border border-cyan-400/80 bg-gradient-to-r from-cyan-500 via-sky-500 to-indigo-500 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-950 shadow-[0_0_32px_rgba(56,189,248,0.8)] transition hover:brightness-110"
-            >
-              Log a new moment
-            </Link>
-          </div>
-        </header>
-
-        {posts.length === 0 ? (
-          <section className="mt-6 rounded-3xl border border-dashed border-slate-700/80 bg-slate-950/40 p-8 text-center text-sm text-slate-300">
-            <p className="mb-2 font-medium">
-              Your archive is quiet. That’s okay.
-            </p>
-            <p className="mb-4 text-slate-400">
-              Start by logging something tiny — a near‑miss, a small win, a
-              weird moment that stuck with you.
+        {/* Main feed */}
+        <section className="flex-1 space-y-4">
+          <div className="rounded-lg border border-[#d0e3ff] bg-white p-4 text-[#0a66c2]">
+            <p className="mb-3 text-sm font-semibold text-[#084482]">
+              Share a moment
             </p>
             <Link
               href="/posts/new"
-              className="inline-flex items-center justify-center rounded-full border border-cyan-400/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-200 hover:bg-cyan-500/10"
+              className="inline-flex w-full items-center justify-start rounded-full border border-[#0a66c2] bg-white px-4 py-2 text-left text-sm text-[#757575] hover:bg-[#e8f3ff]"
             >
-              Log your first entry
+              Log a win, a fuck up, or a weird milestone...
             </Link>
-          </section>
-        ) : (
-          <section className="space-y-6">
-            {years.map((year) => (
-              <div key={year} className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.26em] text-slate-300">
-                    {year}
-                  </h2>
-                  <span className="h-px flex-1 bg-gradient-to-r from-slate-700/80 to-transparent" />
+          </div>
+
+          {posts.length === 0 ? (
+            <section className="rounded-lg border border-dashed border-[#d0e3ff] bg-white p-6 text-center text-sm text-[#084482]">
+              <p className="mb-2 font-semibold">
+                Your feed is empty. That’s kind of the point.
+              </p>
+              <p className="mb-4 text-xs text-[#084482]/80">
+                Start by logging something tiny — a near‑miss, a small win, a
+                weird moment that stuck with you.
+              </p>
+              <Link
+                href="/posts/new"
+                className="inline-flex items-center justify-center rounded-full border border-[#0a66c2] px-4 py-2 text-xs font-semibold text-[#0a66c2] hover:bg-[#e8f3ff]"
+              >
+                Log your first entry
+              </Link>
+            </section>
+          ) : (
+            <section className="space-y-4">
+              {years.map((year) => (
+                <div key={year} className="space-y-2">
+                  <div className="flex items-center gap-2 px-1">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#084482]/80">
+                      {year}
+                    </span>
+                    <span className="h-px flex-1 bg-[#d0e3ff]" />
+                  </div>
+                  <div className="space-y-3">
+                    {groups[year].map((post: (typeof posts)[number]) => (
+                      <article
+                        key={post.id}
+                        className="rounded-lg border border-[#d0e3ff] bg-white p-4 text-[#084482]"
+                      >
+                        <div className="mb-1 flex items-center justify-between text-[11px] text-[#084482]/70">
+                          <span className="font-semibold">
+                            {post.type.toLowerCase()}
+                          </span>
+                          <span>
+                            {new Date(post.happenedAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <Link href={`/posts/${post.id}`}>
+                          <h3 className="mb-1 text-sm font-semibold text-[#0a66c2]">
+                            {post.title}
+                          </h3>
+                          <p className="line-clamp-3 text-xs text-[#084482]/80">
+                            {post.body}
+                          </p>
+                        </Link>
+                      </article>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {groups[year].map((post: (typeof posts)[number]) => (
-                    <Link
-                      key={post.id}
-                      href={`/posts/${post.id}`}
-                      className="group rounded-2xl border border-slate-800/80 bg-slate-950/50 p-4 text-left shadow-[0_0_32px_rgba(15,23,42,0.8)] transition hover:border-cyan-400/70 hover:shadow-[0_0_40px_rgba(56,189,248,0.6)]"
-                    >
-                      <div className="mb-2 flex items-center justify-between text-[10px] font-medium uppercase tracking-[0.18em]">
-                        <span className="rounded-full px-2 py-0.5 text-slate-300">
-                          {post.type.toLowerCase()}
-                        </span>
-                        <span className="text-slate-500">
-                          {new Date(post.happenedAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <h3 className="mb-1 text-sm font-semibold text-slate-50">
-                        {post.title}
-                      </h3>
-                      <p className="line-clamp-3 text-xs text-slate-400">
-                        {post.body}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </section>
-        )}
+              ))}
+            </section>
+          )}
+        </section>
+
+        {/* Right sidebar placeholder */}
+        <aside className="hidden w-64 flex-shrink-0 md:block">
+          <div className="rounded-lg border border-[#d0e3ff] bg-white p-4 text-xs text-[#084482]">
+            <p className="mb-2 font-semibold text-[#0a66c2]">
+              Need a prompt?
+            </p>
+            <ul className="space-y-1">
+              <li>• A small win you almost ignored.</li>
+              <li>• A mistake you’re still thinking about.</li>
+              <li>• A weird milestone you didn’t see coming.</li>
+            </ul>
+          </div>
+        </aside>
       </div>
     </main>
   );

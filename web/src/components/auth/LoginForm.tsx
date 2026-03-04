@@ -2,11 +2,10 @@
 
 import { useState, type FormEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -18,13 +17,11 @@ export function LoginForm() {
     setError(null);
 
     try {
-      const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
-
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
-        callbackUrl,
+        callbackUrl: "/dashboard",
       });
 
       if (!result || result.error) {

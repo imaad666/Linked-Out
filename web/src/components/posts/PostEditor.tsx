@@ -7,9 +7,9 @@ type Post = {
   id: string;
   title: string;
   body: string;
-  type: "WIN" | "FAIL" | "WEIRD" | "LESSON" | "OTHER";
-  mood: "LIGHT" | "HEAVY" | "NEUTRAL" | "CHAOTIC" | "PROUD" | "OTHER";
-  visibility: "PRIVATE" | "UNLISTED" | "PUBLIC";
+  type: string;
+  mood: string;
+  visibility: string;
   happenedAt: string | Date;
 };
 
